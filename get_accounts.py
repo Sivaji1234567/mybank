@@ -26,7 +26,8 @@ class create_cd_account(BaseHandler):
         data = json.loads(self.request.body)
         person_id=data.get("personid")
         print("id",person_id)
-        cd_term=data.get("selectedterm")
+        cd_term=data.get("term")
+        cd_rate=data.get("rate")
         print(cd_term)
         # account_number=""
         s=''
@@ -36,12 +37,12 @@ class create_cd_account(BaseHandler):
         balance=data.get("amount")
         connection = get_db_connection()
         with connection.cursor() as cursor:
-            sql="INSERT INTO CD_ACCOUNTS (person_id, cd_term, cd_number, balance) VALUES (%s, %s, %s, %s);"
-            res=cursor.execute(sql,(person_id,cd_term,cd_number,balance))
+            sql="INSERT INTO CD_ACCOUNTS (person_id, cd_term, cd_number, balance,rate,status) VALUES (%s, %s, %s, %s,%s,%s);"
+            cursor.execute(sql,(person_id,cd_term,cd_number,balance,cd_rate,"o"))
             # print(res)
-        print("entered",cd_number)
-        connection.commit()
-        connection.close() 
+            print("entered",cd_number)
+            connection.commit()
+            connection.close() 
 class get_cd_accounts(BaseHandler):
     def get(self):
         response_body={
@@ -61,7 +62,7 @@ class get_cd_accounts(BaseHandler):
             for i in result['data']:
                 i['created_at']=i["created_at"].isoformat() 
                 if i['status']=='o':
-                        response_body["payload"].append(i)
+                    response_body["payload"].append(i)
             self.write(response_body)
 class get_funding_accounts(BaseHandler):
     def get(self):
@@ -111,30 +112,15 @@ class Close_cd(BaseHandler):
         request_body["amount"]=data.get("amount")
         print("from core",request_body)
         tranfer_amount(request_body)
-        # print(result)
-        # connection = get_db_connection()
-        # with connection.cursor() as cursor:
-        #     sql1= "UPDATE  accounts set balance=balance+%s WHERE account_number=%s;"
-        #     sql2="UPDATE cd_accounts SET balance =%s ,status =%s  WHERE cd_number = %s;"
-        #     cursor.execute(sql1,(transfer_balance,to_account_number))
-        #     cursor.execute(sql2,(0,"c",from_account_number))
-        # connection.commit()
-        # connection.close() 
-        # print(from_account_number,to_account_number)
-        # self.write(from_account_number)
 class Fundcd(BaseHandler):
     def post(self):
         data = json.loads(self.request.body)
         request_body={}
         request_body["purpose"]="for_funding"
-        request_body["from_account_number"]=data.get("from_account")
-        request_body["to_account_number"]=data.get("selectedaccount")
+        request_body["from_account_number"]=data.get("selectedaccount")
+        request_body["to_account_number"]=data.get("to_account")
         request_body["amount"]=data.get("amount")
-        # accounts_request["service"]="get_account_with_number";accounts_request["value"]=from_account_number
-        # certificates_request["service"]="get_cd_with_number";certificates_request["value"]=to_account_number
-        # request_data["value"]=from_account_number   
-        # result=get_cd_and_funding_accounts(accounts_request)
-        # print(result)
+        tranfer_amount(request_body)
 
 
 

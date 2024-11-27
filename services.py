@@ -11,7 +11,7 @@ def get_db_connection():
     )
 
 def get_cd_and_funding_accounts(request):
-    print("entered into this function")
+    # print("entered into this function")
     element=request["service"]
     match element:
         case "get_account_with_id":
@@ -41,7 +41,7 @@ def tranfer_amount(request_body):
             cursor.execute(sql2,(request_body["amount"],"c",request_body["from_account_number"]))
         else:
             sql1= "UPDATE  accounts set balance=balance-%s WHERE account_number=%s;"
-            sql2="UPDATE cd_accounts SET balance =balance+%s ,status =%s  WHERE cd_number = %s;"
+            sql2="UPDATE cd_accounts SET balance =balance+%s   WHERE cd_number = %s;"
             cursor.execute(sql1,(request_body["amount"],request_body["from_account_number"]))
             cursor.execute(sql2,(request_body["amount"],request_body["to_account_number"]))
     connection.commit()

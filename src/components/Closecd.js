@@ -35,6 +35,7 @@ function Closecd() {
         };
         // console.log(from_account);
         console.log(reasons);
+        console.log(selectedaccount);
   return (
     <div>
       <div className='sub'>
@@ -64,7 +65,7 @@ function Closecd() {
     </div>
     <div>Reason for Closing</div>
     <div>
-        <select  className="dropdown" onChange={(e)=>setSelectedaccount(e.target.value)}>
+        <select  className="dropdown" >
         <option value="" hidden>Select The Reason</option>
  
          {

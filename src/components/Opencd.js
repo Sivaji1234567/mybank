@@ -7,13 +7,14 @@ function Opencd() {
   const navigate=useNavigate();
     const [personid,setPersonid]=useState(2);
     const [terms,setTerms]=useState([]);
-    const [selectedterm,setSelectedterm]=useState('');
+    const [selectedterm,setSelectedTerm]=useState('');
     const [accounts,setAccounts]=useState([]);
     const [selectedaccount,setSelectedaccount]=useState('');
     const[amount,setAmount]=useState('');
-    
+    const term=selectedterm.plan;
+    const rate=selectedterm.rates;
     const handleSubmit= () =>{
-      axios.post('http://localhost:3003/create_account', {personid,selectedterm,amount})
+      axios.post('http://localhost:3003/create_account', {personid,term,rate,selectedaccount,amount})
       .then(response => {
         console.log("successful")
       })
@@ -32,17 +33,19 @@ function Opencd() {
       .then(res=>{setAccounts(res.data.data)})
       .then(err=>{console.log(err)})
     },[personid])
-    // console.log(terms);
-    // console.log(accounts);
+    console.log(term);
+    console.log(rate);
     console.log(selectedterm);
-    console.log(selectedaccount);
+    // console.log(selectedaccount);
   return (
     <div>
       <div className='new_cd'>
         <h1>Open a new Certificate of Deposit</h1>
         <div className='certificate'>
         <h3>Select a type of cd</h3>
-      <select  className="dropdown" onChange={(e)=>setSelectedterm(e.target.value)}>
+      <select  className="dropdown" onChange={(e)=>{
+        const selected = terms[e.target.value]; // Use the index to get the selected term
+        setSelectedTerm(selected)}}>
   <option  className="dropdown-content" value="" hidden>Select the CD term</option>
   <option >
     <div className='drop-a'>plan</div>
@@ -51,7 +54,8 @@ function Opencd() {
     </option>
   {
     terms.map((item, index) => (
-      <option  className="dropdown-content" key={index} value={item.plan}>{item.plan} --- {item.rates}</option>
+      <option  className="dropdown-content"  key={index} 
+      value={index}>{item.plan} --- {item.rates}</option>
     ))
   }
 </select><br/>

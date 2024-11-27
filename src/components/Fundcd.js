@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation,useNavigate } from 'react-router-dom'
 import { useEffect } from 'react';
 import axios from 'axios';
 function Fundcd() {
+  const navigate =useNavigate();
     const [funding_accounts,setFunding_accounts]=useState([]);
     const  [personid,setPersonid]=useState(2);
     const [selectedaccount,setSelectedaccount]=useState();
-    const [reasons,setReasons]=useState([]);
     const location = useLocation();
     const item = location.state;
     const to_account=item.cd_number;
@@ -16,23 +16,19 @@ function Fundcd() {
         .then(res=>{setFunding_accounts(res.data.data)})
         .then(err=>{console.log(err)})
       },[personid])
-      useEffect(()=>{
-        axios.get(`http://localhost:3003/close_cd`)
-        .then(res=>{setReasons(res.data.data)})
-        .then(err=>{console.log(err)})
-      },[])
      
       const handleFunding= () =>{
         axios.post('http://localhost:3003/fund_cd', {selectedaccount,to_account,amount})
         .then(response => {
           console.log("successful")
+          navigate('/display_cd')
         })
         .catch(error => {
           console.log(error);
         });
         };
         // console.log(from_account);
-        console.log(reasons);
+        console.log(funding_accounts);
   return (
     <div>
       <div className='sub'>
